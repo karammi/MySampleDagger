@@ -14,6 +14,6 @@ public interface ApplicationComponent {
 
 //    void inject(App app);
 
-    @ApplicationScope
+//    @ApplicationScope
     ApiInterface getApiInterface();
 }

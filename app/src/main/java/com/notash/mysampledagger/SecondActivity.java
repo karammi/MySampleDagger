@@ -29,8 +29,8 @@ public class SecondActivity extends AppCompatActivity {
     TextView textView;
 
 
-//    @Inject
-//    ApiInterface apiInterface;
+    @Inject
+    ApiInterface apiInterface;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +39,7 @@ public class SecondActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         textView = (TextView) findViewById(R.id.textView);
 
-        ApiInterface apiInterface2 = (App.get(this).component).getApiInterface();
-
+//        ApiInterface apiInterface2 = (App.get(this).component).getApiInterface();
 
 
         ActivityComponent component = DaggerActivityComponent.builder()
@@ -65,32 +64,32 @@ public class SecondActivity extends AppCompatActivity {
 //                }
 //            });
 //        }
+        if (apiInterface != null)
+            apiInterface.getCities()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        apiInterface2.getCities()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                        }
 
-                    }
+                        @Override
+                        public void onNext(JsonObject object) {
+                            Log.e("RES", "onNext: " + object.toString());
+                            textView.setText(object.get("data").getAsJsonArray().toString());
+                        }
 
-                    @Override
-                    public void onNext(JsonObject object) {
-                        Log.e("RES", "onNext: " + object.toString());
-                        textView.setText(object.get("data").getAsJsonArray().toString());
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.d("ERR", "onError: ");
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("ERR", "onError: ");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.e("COMPLETE", "onComplete: " );
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            Log.e("COMPLETE", "onComplete: ");
+                        }
+                    });
 
 
     }
